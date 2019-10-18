@@ -1,1 +1,1 @@
-# technopart_algorithms_M1
+# technopark_algorithms_M1
