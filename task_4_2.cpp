@@ -37,7 +37,7 @@ public:
         buf[heap_size - 1] = value;
         sift_up(heap_size - 1);
     }
-    T extract_min() {
+    T extract_top() {
         assert(heap_size != 0);
 
         T value = buf[0];
@@ -48,7 +48,7 @@ public:
 
         return value;
     }
-    T peek_min() const {
+    T peek_top() const {
         assert(heap_size != 0);
         return buf[0];
     }
@@ -83,18 +83,18 @@ private:
         size_t left = i * 2 + 1;
         size_t right = i * 2 + 2;
 
-        size_t i_min = i;
+        size_t i_top = i;
 
         if (left < heap_size && cmp(buf[left], buf[i])) {
-            i_min = left;
+            i_top = left;
         }
-        if (right < heap_size && cmp(buf[right], buf[i_min])) {
-            i_min = right;
+        if (right < heap_size && cmp(buf[right], buf[i_top])) {
+            i_top = right;
         }
 
-        if (i_min != i) {
-            std::swap(buf[i_min], buf[i]);
-            sift_down(i_min);
+        if (i_top != i) {
+            std::swap(buf[i_top], buf[i]);
+            sift_down(i_top);
         }
     }
     void sift_up(size_t i) {
@@ -112,7 +112,7 @@ private:
 
 template <class T>
 struct more {
-    constexpr bool operator()(const T& l, const T& r) {
+    bool operator()(const T& l, const T& r) {
         return l > r;
     }
 };
@@ -130,12 +130,12 @@ int main() {
     int elem1 = 0, elem2 = 0;
     int sum = 0;
     while (!heap.is_empty()) {
-        elem1 = heap.extract_min();
+        elem1 = heap.extract_top();
 
         if (heap.is_empty()) {
             std::cout << sum;
         } else {
-            elem2 = heap.extract_min();
+            elem2 = heap.extract_top();
             sum += elem1 + elem2;
             heap.insert(elem1 + elem2);
         }
