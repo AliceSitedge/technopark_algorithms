@@ -35,7 +35,7 @@ int kth_statistic(T *arr, int left, int right, int k, Comparator cmp = Comparato
     int pivot_pos = partition(arr, left, right, cmp);
 
     while (pivot_pos != k) {
-        if (pivot_pos < k) {
+        if (cmp(pivot_pos, k)) {
             left = pivot_pos + 1;
         } else {
             right = pivot_pos - 1;
