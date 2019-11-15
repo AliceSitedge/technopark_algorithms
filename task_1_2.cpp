@@ -1,7 +1,3 @@
-#include <utility>
-
-#include <utility>
-
 // 1_2. Реализуйте структуру данных типа "множество строк" на основе динамической хеш-таблицы с открытой адресацией.
 // Хранимые строки непустые и состоят из строчных латинских букв.
 // Хеш-функция строки должна быть реализована с помощью вычисления значения многочлена методом Горнера.
@@ -35,38 +31,24 @@ size_t get_odd_hash(const std::string &str, size_t constant, size_t size) {
     return hash;
 }
 
-template<class T>
-struct HashElement {
-    explicit HashElement(T key, bool deleted=false) : key(std::move(key)), deleted(deleted) {}
-    T key;
-    bool deleted;
-};
-
-template<class T>
 class HashTable {
 public:
-    explicit HashTable(size_t size=DEFAULT_SIZE) : size(0), table(size, nullptr) {}
-    ~HashTable() {
-        for (auto elem : table) {
-            delete elem;
-        }
-    }
+    explicit HashTable(size_t size=DEFAULT_SIZE) : size(0), table(size, "NIL") {}
+    ~HashTable() = default;
 
-    bool has(const T &key) const {
+    bool has(const std::string &key) const {
         size_t hash = get_hash(key, 71, table.size());
         size_t odd_hash = get_odd_hash(key, 11, table.size());
 
-        HashElement<T> *elem = table[hash];
         size_t current_pos = hash;
-        for (int i = 1; elem != nullptr && elem->key != key; i++) {
-            hash = (hash + i * odd_hash) % table.size();
-            elem = table[hash];
+        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i  != table.size(); i++) {
+            current_pos = (hash + i * odd_hash) % table.size();
         }
 
-        return !(elem == nullptr || elem->deleted);
+        return !(table[current_pos] == "NIL" || table[current_pos] == "DEL");
     }
 
-    bool add(const T &key) {
+    bool add(const std::string &key) {
         if (size > table.size() * MAX_ALPHA) {
             grow();
         }
@@ -74,77 +56,64 @@ public:
         size_t hash = get_hash(key, 71, table.size());
         size_t odd_hash = get_odd_hash(key, 11, table.size());
 
-        HashElement<T> *elem = table[hash];
-        HashElement<T> *deleted_elem = nullptr;
+        int deleted_elem = -1;
         size_t current_pos = hash;
-        for (int i = 1; elem != nullptr && elem->key != key; i++) {
-            if (elem->deleted && deleted_elem == nullptr) {
-                deleted_elem = elem;
+        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i != table.size(); i++) {
+            if (table[current_pos] == "DEL" && deleted_elem == -1) {
+                deleted_elem = int(current_pos);
             }
-
-            hash = (hash + i * odd_hash) % table.size();
-            elem = table[hash];
+            current_pos = (hash + i * odd_hash) % table.size();
         }
 
-        if (elem == nullptr) {
-            table[hash] = new HashElement<T>(key);
-            size++;
-            return true;
-        }
-
-        if (elem->key == key && !elem->deleted) {
+        if (table[current_pos] == key) {
             return false;
         }
 
-        if (deleted_elem == nullptr) {
-            elem->deleted = false;
+        if (deleted_elem == -1) {
+            table[current_pos] = key;
         } else {
-            deleted_elem->key = key;
-            deleted_elem->deleted = false;
+            table[deleted_elem] = key;
         }
         size++;
         return true;
     }
 
-    bool remove(const T &key) {
+    bool remove(const std::string &key) {
         size_t hash = get_hash(key, 71, table.size());
         size_t odd_hash = get_odd_hash(key, 11, table.size());
 
-        HashElement<T> *elem = table[hash];
         size_t current_pos = hash;
-        for (int i = 1; elem != nullptr && elem->key != key; i++) {
-            hash = (hash + i * odd_hash) % table.size();
-            elem = table[hash];
+        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i != table.size(); i++) {
+            current_pos = (hash + i * odd_hash) % table.size();
         }
         
-        if (elem == nullptr || elem->deleted) {
+        if (table[current_pos] == "NIL" || table[current_pos] == "DEL") {
             return false;
         }
         
-        elem->deleted = true;
+        table[current_pos] = "DEL";
         size--;
         return true;        
     }
 private:
     size_t size;
-    std::vector<HashElement<T>*> table;
+    std::vector<std::string> table;
 
     void grow() {
-        std::vector<HashElement<T>*> old_table = std::move(table);
-        table = std::vector<HashElement<T>*>(old_table.size() * 2, nullptr);
+        std::vector<std::string> old_table = std::move(table);
+        table = std::vector<std::string>(old_table.size() * 2, "NIL");
         size = 0;
 
-        for (auto elem : old_table) {
-            if (elem != nullptr && !elem->deleted) {
-                add(elem->key);
-                delete elem;
+        for (const auto &elem : old_table) {
+            if (elem != "NIL" && elem != "DEL") {
+                add(elem);
             }
         }
     }
 };
 
 int main() {
-    HashTable<std::string> hash_table;
+    HashTable hash_table;
 
     char op;
     std::string key;
