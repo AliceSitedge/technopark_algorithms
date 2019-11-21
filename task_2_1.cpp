@@ -53,6 +53,7 @@ public:
     bool add(const T &value) {
         if (root == nullptr) {
             root = new Node(value);
+            return true;
         }
 
         Node *current_node = root;
@@ -64,11 +65,13 @@ public:
             if (cmp(current_node->value, value)) {
                 if (current_node->right == nullptr) {
                     current_node->right = new Node(value);
+                    return true;
                 }
                 current_node = current_node->right;
             } else {
                 if (current_node->left == nullptr) {
                     current_node->left = new Node(value);
+                    return true;
                 }
                 current_node = current_node->left;
             }
