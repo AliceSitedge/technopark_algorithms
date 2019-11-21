@@ -33,17 +33,12 @@ size_t get_odd_hash(const std::string &str, size_t constant, size_t size) {
 
 class HashTable {
 public:
-    explicit HashTable(size_t size=DEFAULT_SIZE) : size(0), table(size, "NIL") {}
+    explicit HashTable(size_t size = DEFAULT_SIZE) : size(0), table(size, "NIL") {}
+
     ~HashTable() = default;
 
     bool has(const std::string &key) const {
-        size_t hash = get_hash(key, 71, table.size());
-        size_t odd_hash = get_odd_hash(key, 11, table.size());
-
-        size_t current_pos = hash;
-        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i  != table.size(); i++) {
-            current_pos = (hash + i * odd_hash) % table.size();
-        }
+        size_t current_pos = find(key);
 
         return !(table[current_pos] == "NIL" || table[current_pos] == "DEL");
     }
@@ -79,22 +74,17 @@ public:
     }
 
     bool remove(const std::string &key) {
-        size_t hash = get_hash(key, 71, table.size());
-        size_t odd_hash = get_odd_hash(key, 11, table.size());
+        size_t current_pos = find(key);
 
-        size_t current_pos = hash;
-        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i != table.size(); i++) {
-            current_pos = (hash + i * odd_hash) % table.size();
-        }
-        
         if (table[current_pos] == "NIL" || table[current_pos] == "DEL") {
             return false;
         }
-        
+
         table[current_pos] = "DEL";
         size--;
-        return true;        
+        return true;
     }
+
 private:
     size_t size;
     std::vector<std::string> table;
@@ -109,6 +99,18 @@ private:
                 add(elem);
             }
         }
+    }
+
+    size_t find(const std::string &key) const {
+        size_t hash = get_hash(key, 71, table.size());
+        size_t odd_hash = get_odd_hash(key, 11, table.size());
+
+        size_t current_pos = hash;
+        for (int i = 1; table[current_pos] != "NIL" && table[current_pos] != key && i != table.size(); i++) {
+            current_pos = (hash + i * odd_hash) % table.size();
+        }
+
+        return current_pos;
     }
 };
 
