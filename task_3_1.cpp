@@ -80,7 +80,7 @@ public:
         }
     }
 
-    size_t get_height() {
+    size_t get_height() const {
         if (root == nullptr) {
             return 0;
         }
@@ -181,7 +181,7 @@ public:
         }
     }
 
-    size_t get_height() {
+    size_t get_height() const {
         return find_height(root);
     }
 
@@ -210,7 +210,7 @@ private:
         }
     }
 
-    size_t find_height(Node *node) {
+    size_t find_height(Node *node) const {
         if (node == nullptr) {
             return 0;
         }
