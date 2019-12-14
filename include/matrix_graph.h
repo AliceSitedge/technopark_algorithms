@@ -20,5 +20,4 @@ private:
     std::vector<std::vector<bool>> adjacency_matrix;
 };
 
-
 #endif  // ALGORITHMS_MATRIX_GRAPH_H

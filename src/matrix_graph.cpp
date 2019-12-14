@@ -40,9 +40,9 @@ std::vector<int> MatrixGraph::get_prev_vertices(int vertex) const {
     assert(vertex >= 0 && vertex < adjacency_matrix.size());
     std::vector<int> vertices;
 
-    for (int from = 0; from < adjacency_matrix.size(); from++) {
-        if (adjacency_matrix[from][vertex] == true) {
-            vertices.push_back(from);
+    for (int i = 0; i < adjacency_matrix.size(); i++) {
+        if (adjacency_matrix[i][vertex] == true) {
+            vertices.push_back(i);
         }
     }
     return vertices;

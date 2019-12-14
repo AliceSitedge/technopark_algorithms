@@ -3,6 +3,7 @@
 
 #include <vector>
 
+
 struct IGraph {
     virtual ~IGraph() = default;
 
