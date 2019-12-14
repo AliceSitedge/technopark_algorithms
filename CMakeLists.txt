@@ -4,7 +4,10 @@ project(Algorithms)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES
-        src/list_graph.cpp)
+        src/list_graph.cpp
+        src/matrix_graph.cpp
+        src/set_graph.cpp
+        src/arc_graph.cpp)
 
 include_directories(include)
 

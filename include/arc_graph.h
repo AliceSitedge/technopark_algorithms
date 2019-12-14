@@ -1,13 +1,13 @@
-#ifndef ALGORITHMS_LIST_GRAPH_H
-#define ALGORITHMS_LIST_GRAPH_H
+#ifndef ALGORITHMS_ARC_GRAPH_H
+#define ALGORITHMS_ARC_GRAPH_H
 
 #include "i_graph.h"
 
 
-class ListGraph : public IGraph {
+class ArcGraph : public IGraph {
 public:
-    explicit ListGraph(int n);
-    explicit ListGraph(const IGraph &graph);
+    explicit ArcGraph(int n);
+    explicit ArcGraph(const IGraph &graph);
 
     void add_edge(int from, int to) override;
 
@@ -17,7 +17,8 @@ public:
     std::vector<int> get_prev_vertices(int vertex) const override;
 
 private:
-    std::vector<std::vector<int>> adjacency_lists;
+    int size;
+    std::vector<std::pair<int, int>> edges;
 };
 
-#endif  // ALGORITHMS_LIST_GRAPH_H
+#endif //ALGORITHMS_ARC_GRAPH_H

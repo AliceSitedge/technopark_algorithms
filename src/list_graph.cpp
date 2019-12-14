@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "list_graph.h"
 
 

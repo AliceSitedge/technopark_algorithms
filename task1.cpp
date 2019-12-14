@@ -3,6 +3,9 @@
 #include <queue>
 
 #include "list_graph.h"
+#include "matrix_graph.h"
+#include "set_graph.h"
+#include "arc_graph.h"
 
 
 void bfs(const IGraph &graph, std::vector<bool> &visited, int vertex, const std::function<void(int)> &func) {
@@ -40,7 +43,7 @@ void print(const IGraph &graph) {
 }
 
 int main() {
-    ListGraph graph(5);
+    ArcGraph graph(5);
     graph.add_edge(0, 2);
     graph.add_edge(0, 4);
     graph.add_edge(1, 0);
@@ -50,7 +53,7 @@ int main() {
     graph.add_edge(3, 2);
     print(graph);
 
-    ListGraph graph1(graph);
+    ArcGraph graph1(graph);
     print(graph1);
 
     return 0;
