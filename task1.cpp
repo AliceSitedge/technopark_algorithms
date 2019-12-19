@@ -43,7 +43,7 @@ void print(const IGraph &graph) {
 }
 
 int main() {
-    ArcGraph graph(5);
+    ListGraph graph(5);
     graph.add_edge(0, 2);
     graph.add_edge(0, 4);
     graph.add_edge(1, 0);
@@ -55,6 +55,9 @@ int main() {
 
     ArcGraph graph1(graph);
     print(graph1);
+
+    MatrixGraph graph2(graph1);
+    print(graph2);
 
     return 0;
 }
