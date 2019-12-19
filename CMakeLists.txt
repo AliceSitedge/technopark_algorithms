@@ -11,6 +11,6 @@ set(SOURCE_FILES
 
 include_directories(include)
 
-add_executable(task1 task1.cpp ${SOURCE_FILES})
+add_executable(task1 task_1.cpp ${SOURCE_FILES})
 add_executable(task2 task_2.cpp)
 add_executable(task3 task_3.cpp)
