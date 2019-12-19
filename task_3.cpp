@@ -1,19 +1,20 @@
-//Требуется отыскать самый выгодный маршрут между городами.
-//Требования: время работы O((N+M)logN), где N-количество городов, M-известных дорог между ними.
-//Формат входных данных.
-//Первая строка содержит число N – количество городов.
-//Вторая строка содержит число M - количество дорог.
-//Каждая следующая строка содержит описание дороги (откуда, куда, время в пути).
-//Последняя строка содержит маршрут (откуда и куда нужно доехать).
-//Формат выходных данных.
-//Вывести длину самого выгодного маршрута.
+// Требуется отыскать самый выгодный маршрут между городами.
+// Требования: время работы O((N+M)logN), где N-количество городов, M-известных дорог между ними.
+// Формат входных данных.
+// Первая строка содержит число N – количество городов.
+// Вторая строка содержит число M - количество дорог.
+// Каждая следующая строка содержит описание дороги (откуда, куда, время в пути).
+// Последняя строка содержит маршрут (откуда и куда нужно доехать).
+// Формат выходных данных.
+// Вывести длину самого выгодного маршрута.
 
 #include <iostream>
 #include <cassert>
 #include <vector>
 #include <set>
 
-typedef std::pair<int, int> Edge;
+typedef std::pair<int, int> Edge;  // first: vertex, second: edge length
+typedef std::pair<int, int> DistanceVertex;  // first: shortest distance to vertex, second: vertex
 
 class CListGraph {
 public:
@@ -56,19 +57,24 @@ std::vector<int> find_shortest_distances(const CListGraph &graph, int start_vert
     distances[start_vertex] = 0;
     std::vector<int> parents(graph.vertices_count(), -1);
 
-    std::set<std::pair<int, int>> set;
+    std::set<DistanceVertex> set;
     set.emplace(0, start_vertex);
 
     while (!set.empty()) {
-        auto current_vertex = set.erase(set.begin());
+        DistanceVertex current_vertex = *set.begin();
+        set.erase(set.begin());
 
-        for (auto vertex : graph.get_next_vertices(current_vertex->second)) {
-            if (distances[vertex.first] == INT32_MAX) {
-//                distances[vertex.first];
+        for (DistanceVertex vertex : graph.get_next_vertices(current_vertex.second)) {
+            if (distances[vertex.first] > distances[current_vertex.second] + vertex.second) {
+                if (distances[vertex.first] != INT32_MAX) {
+                    set.erase(DistanceVertex(distances[vertex.first], vertex.first));
+                }
+                distances[vertex.first] = distances[current_vertex.second] + vertex.second;
+                parents[vertex.first] = current_vertex.second;
+                set.emplace(distances[vertex.first], vertex.first);
             }
         }
     }
-
     return distances;
 }
 
@@ -77,10 +83,11 @@ int main() {
     std::cin >> n >> m;
     CListGraph graph(n);
 
-    int from = 0, to = 0, value = 0;
+    int u = 0, w = 0, value = 0;
     for (int i = 0; i < m; i++) {
-        std::cin >> from >> to >> value;
-        graph.add_edge(from, to, value);
+        std::cin >> u >> w >> value;
+        graph.add_edge(u, w, value);
+        graph.add_edge(w, u, value);
     }
 
     int start_vertex = 0, end_vertex = 0;
